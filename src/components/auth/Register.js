@@ -37,6 +37,7 @@ export function Register(){
 
     return(
     <div>
+        <div>Register</div>
         {error && <p>{error}</p>}
         <form onSubmit={handleSubmit} >
         <label htmlFor="email">Email</label>
