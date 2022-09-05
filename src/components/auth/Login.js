@@ -2,6 +2,7 @@ import { useState } from "react"
 import { useAuth } from "../../context/AuthContext"
 import { useNavigate } from "react-router-dom"
 import { async } from "@firebase/util"
+import { Alert } from "../Alert"
 export function Login(){
 
     const [user, setUser] = useState(
@@ -11,7 +12,7 @@ export function Login(){
         }
     )
 
-    const { login } = useAuth()
+    const { login, loginWithGoogle } = useAuth()
 
     const navigate = useNavigate()
 
@@ -27,27 +28,40 @@ export function Login(){
             await login(user.email, user.password)
             navigate('/')
         } catch(error){
-             if(error.code === "auth/weak-password"){
-                 setError('Contraseña invalido');
-             }
-            //setError(error.message);
+            //  if(error.code === "auth/weak-password"){
+            //      setError('Contraseña invalido');
+            //  }
+            setError(error.message);
+        }
+    };
+    
+    const handleGoogleSignin = async () => {
+        try{
+            await loginWithGoogle()
+            navigate('/')
+        } catch(error){
+            console.error(error)
         }
     }
-    
 
     return(
-    <div>
+    <div className="w-full max-w-xs m-auto">
         <div>Login</div>
-        {error && <p>{error}</p>}
-        <form onSubmit={handleSubmit} >
-        <label htmlFor="email">Email</label>
-        <input type="email" name="email" id="email" placeholder="ejemplo@gmail.com" onChange={handleChange}/>
+        {error && <Alert message={error}/>}
+        <form onSubmit={handleSubmit} className="bg-white shadow-sm rounded px-8 pt-6 pb-8 mb-4">
+        <div className="mb-4">
+            <label htmlFor="email" className="block text-gray-700 text-sm font-fold mb-2" >Email</label>
+            <input type="email" name="email" id="email" placeholder="ejemplo@gmail.com" className="shadow aparence-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" onChange={handleChange}/>
+        </div>
+        
+        <div className="mb-4">
+            <label htmlFor="password" className="block text-gray-700 text-sm font-fold mb-2" >Password</label>
+            <input type="password" name="password" id="password" onChange={handleChange} className="shadow aparence-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"  placeholder="************"/>
+        </div>
 
-        <label htmlFor="password">Password</label>
-        <input type="password" name="password" id="password" onChange={handleChange} placeholder="************"/>
-
-        <button>Login</button>
+        <button className="bg-blue-700 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Login</button>  
     </form>
+    <button className="bg-slate-50 hover:bg-slate-200 text-black font-bold py-2 px-4 shadow-md rounded  border-gray-300 py-2 px-4 w-full" onClick={handleGoogleSignin} >Login with Google</button>
     </div>
     )
 }
