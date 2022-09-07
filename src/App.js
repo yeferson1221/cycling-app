@@ -8,8 +8,8 @@ function App() {
   return (
     <div className="bg-slate-300 h-screen text-white flex">
     <AuthProvider>
+    
       <Routes>
-     
         <Route path="/" element = {<ProtectedRoute>
           <Home/>
           </ProtectedRoute>}/>
